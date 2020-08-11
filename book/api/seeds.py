@@ -5,7 +5,7 @@ from faker.providers import date_time
 
 from .models import Author, Publisher, Book
 
-
+#Instantiate the faker class
 fake = Faker()
 
 def seed_data():
@@ -32,7 +32,11 @@ def seed_data():
     
     """Generate Random name and store 
     it in the database as title of 
-    the book"""
+    the book
+    -> fake.word gives just a single fake word
+    -> fake.date_between is used to generate dates 
+    --- between a specific time frame
+    """
     for _ in range(1, 101):
         book = Book(
             title = fake.word().capitalize(),
