@@ -217,6 +217,11 @@ class BookOne(View):
         })
 
         return JsonResponse({'result': result}, status = 200)
+
+    def delete(self, request, book_id):
+        """Delete a book from the database"""
+        Book.objects.get(pk=book_id).delete()
+        return JsonResponse({}, status=204)
         
 
 
