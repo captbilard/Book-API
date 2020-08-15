@@ -1,4 +1,6 @@
 import json
+from datetime import datetime
+
 
 from django.shortcuts import render
 from django.views import View
@@ -121,10 +123,48 @@ class AuthorOne(View):
 
 class BookList(View):
     def get(self, request):
-        """Endpoint to et all the books in the database."""
+        """Endpoint to get all the books in the database.
+        or books associated with a particular author, 
+        publisher or a specified date."""
         result = []
-        books = Book.objects.all()
-        for book in books:
+        #get the author id
+        author_id = request.GET.get('author_id')
+        #get the book by a particular author by his name
+        author_name = request.GET.get('author_name')
+        #get books by a particular publisher via their id
+        publisher_id = request.GET.get('publisher_id')
+        #get books by a particular publisher via their name
+        publisher_name = request.GET.get('publisher_name')
+        #get books published before a certain date
+        published_before = request.GET.get('published_before')
+        #get books published after a certain date
+        published_after = request.GET.get('published_after')
+
+
+        book_query = Book.objects
+
+
+        if author_id:
+            book_query = book_query.filter(Author__id=author_id)
+        
+        if author_name:
+            book_query = book_query.filter(Author__name = author_name)
+        
+        if publisher_id:
+            book_query = book_query.filter(Publisher__id=publisher_id)
+
+        if publisher_name:
+            book_query = book_query.filter(Publisher__name=publisher_name)
+        #datetime.strptime converts a string to date object for python, while the other end specifies the format
+        #https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
+        if published_before:
+            book_query = book_query.filter(published_date__lt= datetime.strptime(published_before, '%Y-%m-%d'))
+        
+        if published_after:
+            book_query = book_query.filter(published_date__gt=datetime.strptime(published_after, '%Y-%m-%d'))
+        
+        
+        for book in book_query.all():
             result.append({
                 'id': book.id,
                 'title': book.title,
@@ -168,9 +208,11 @@ class BookList(View):
 
 
 class BookOne(View):
-    """Get's a particular book from the database"""
+    """Get's a particular book from the database
+    using the book id."""
     def get(self, request, book_id):
         result =[]
+        
         book = Book.objects.get(pk=book_id)
         result.append({
             'id': book.id,
