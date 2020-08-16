@@ -140,6 +140,12 @@ class BookList(View):
         #get books published after a certain date
         published_after = request.GET.get('published_after')
 
+        sort_by = request.GET.get('sort_by') or 'id'
+        sort_by_direction = request.GET.get('sort_by_direction') or 'asc'
+
+        sort_prefix = ''
+        
+
 
         book_query = Book.objects
 
@@ -163,6 +169,10 @@ class BookList(View):
         if published_after:
             book_query = book_query.filter(published_date__gt=datetime.strptime(published_after, '%Y-%m-%d'))
         
+        if sort_by_direction == 'dsc':
+            sort_prefix = '-'
+        
+        book_query = book_query.order_by(sort_prefix+sort_by)
         
         for book in book_query.all():
             result.append({
