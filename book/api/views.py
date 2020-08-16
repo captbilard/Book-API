@@ -139,7 +139,7 @@ class BookList(View):
         published_before = request.GET.get('published_before')
         #get books published after a certain date
         published_after = request.GET.get('published_after')
-
+        #Sorting of the API
         sort_by = request.GET.get('sort_by') or 'id'
         sort_by_direction = request.GET.get('sort_by_direction') or 'asc'
 
@@ -172,7 +172,14 @@ class BookList(View):
         if sort_by_direction == 'dsc':
             sort_prefix = '-'
         
+        #Pagination is done with limit and offset
+        limit = int(request.GET.get('limit') or 10)
+        offset = int(request.GET.get('offset')or 0)
+
         book_query = book_query.order_by(sort_prefix+sort_by)
+        
+        #using 
+        book_query = book_query[offset:limit+offset]
         
         for book in book_query.all():
             result.append({
