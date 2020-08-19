@@ -5,7 +5,7 @@ from datetime import datetime
 from django.shortcuts import render
 from django.views import View
 from django.http import JsonResponse
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
 
 
 from .models import Book, Publisher, Author
@@ -13,7 +13,7 @@ from .serializers import AuthorSerializer, BookSerializer, PublisherSerializer
 # Create your views here.
 
 
-class PublishListView(viewsets.ModelViewSet):
+class PublisherListView(viewsets.ModelViewSet):
     """This uses the DRF framework serializer
     and viewset model to handle all the 
     endpoints we manually specified
@@ -30,112 +30,119 @@ class AuthorListView(viewsets.ModelViewSet):
     serializer_class = AuthorSerializer
 
 
+class BookListView(viewsets.ModelViewSet):
+    """"This uses the DRF framework serializer
+    and viewset model to handle all the 
+    endpoints we manually specified
+    for the Author class"""
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    # filter_backends = [filters.OrderingFilter]
+    # ordering_fields = ['title','published_date', 'Author']
 
-class PublisherList(View):
-    def get(self, request):
-        """Return a Json object of all the publishers """
-        publishers = Publisher.objects.all()
-        result = []
-        for publisher in publishers:
-            result.append({
-                'id': publisher.id,
-                'name': publisher.name
-            })
-        return JsonResponse({'result':result})
+# class PublisherList(View):
+#     def get(self, request):
+#         """Return a Json object of all the publishers """
+#         publishers = Publisher.objects.all()
+#         result = []
+#         for publisher in publishers:
+#             result.append({
+#                 'id': publisher.id,
+#                 'name': publisher.name
+#             })
+#         return JsonResponse({'result':result})
 
-    def post(self, request):
-        """Post a publisher into the database"""
-        publisher = Publisher(name=json.loads(request.body)['name'])
-        publisher.save()
+#     def post(self, request):
+#         """Post a publisher into the database"""
+#         publisher = Publisher(name=json.loads(request.body)['name'])
+#         publisher.save()
 
-        return JsonResponse({
-            'id':publisher.id,
-            'name': publisher.name
+#         return JsonResponse({
+#             'id':publisher.id,
+#             'name': publisher.name
             
-            }, status=201)
+#             }, status=201)
     
 
 
-class PublisherOne(View):
-    """Gets one publisher from the database"""
-    def get(self, request, publisher_id):
-        publisher = Publisher.objects.get(pk=publisher_id)
-        return JsonResponse({
-            'id': publisher.id,
-            'name': publisher.name
-        })
+# class PublisherOne(View):
+#     """Gets one publisher from the database"""
+#     def get(self, request, publisher_id):
+#         publisher = Publisher.objects.get(pk=publisher_id)
+#         return JsonResponse({
+#             'id': publisher.id,
+#             'name': publisher.name
+#         })
     
-    def patch(self, request, publisher_id):
-        """Updates a publisher in the database"""
-        publisher = Publisher.objects.get(pk=publisher_id)
-        publisher.name = json.loads(request.body)['name']
-        publisher.save()
+#     def patch(self, request, publisher_id):
+#         """Updates a publisher in the database"""
+#         publisher = Publisher.objects.get(pk=publisher_id)
+#         publisher.name = json.loads(request.body)['name']
+#         publisher.save()
 
-        return JsonResponse({
-            'id': publisher.id,
-            "name": publisher.name
-        })
+#         return JsonResponse({
+#             'id': publisher.id,
+#             "name": publisher.name
+#         })
 
-    def delete(self, request, publisher_id):
-        """Deletes a particular publisher from the db"""
-        Publisher.objects.get(pk=publisher_id).delete()
-        return JsonResponse({}, status=204)
-
-
+#     def delete(self, request, publisher_id):
+#         """Deletes a particular publisher from the db"""
+#         Publisher.objects.get(pk=publisher_id).delete()
+#         return JsonResponse({}, status=204)
 
 
-class AuthorList(View):
-    def get(self, request):
-        """Return a Json object of all the authors """
-        authors = Author.objects.all()
-        result = []
-        for author in authors:
-            result.append({
-                'id': author.id,
-                'name': author.name
-            })
-        return JsonResponse({'result':result})
 
-    def post(self, request):
-        """Post a author into the database"""
-        author = Author(name=json.loads(request.body)['name'])
-        author.save()
 
-        return JsonResponse({
-            'id':author.id,
-            'name': author.name
+# class AuthorList(View):
+#     def get(self, request):
+#         """Return a Json object of all the authors """
+#         authors = Author.objects.all()
+#         result = []
+#         for author in authors:
+#             result.append({
+#                 'id': author.id,
+#                 'name': author.name
+#             })
+#         return JsonResponse({'result':result})
+
+#     def post(self, request):
+#         """Post a author into the database"""
+#         author = Author(name=json.loads(request.body)['name'])
+#         author.save()
+
+#         return JsonResponse({
+#             'id':author.id,
+#             'name': author.name
             
-            }, status=201)
+#             }, status=201)
     
 
 
 
-class AuthorOne(View):
-    """Gets one author from the database based on the id"""
-    def get(self, request, author_id):
-        author = Author.objects.get(pk=author_id)
-        return JsonResponse({
-            'id': author.id,
-            'name': author.name
-        })
+# class AuthorOne(View):
+#     """Gets one author from the database based on the id"""
+#     def get(self, request, author_id):
+#         author = Author.objects.get(pk=author_id)
+#         return JsonResponse({
+#             'id': author.id,
+#             'name': author.name
+#         })
     
-    def patch(self, request, author_id):
-        """Updates a publisher in the database"""
-        author = Author.objects.get(pk=author_id)
-        author.name = json.loads(request.body)['name']
-        author.save()
+#     def patch(self, request, author_id):
+#         """Updates a publisher in the database"""
+#         author = Author.objects.get(pk=author_id)
+#         author.name = json.loads(request.body)['name']
+#         author.save()
 
-        return JsonResponse({
-            'id': author.id,
-            "name": author.name
-        })
+#         return JsonResponse({
+#             'id': author.id,
+#             "name": author.name
+#         })
 
-    def delete(self, request, author_id):
-        """Deletes a particular publisher from the db"""
-        Author.objects.get(pk=author_id).delete()
-        return JsonResponse({}, status=204)
-
-
+#     def delete(self, request, author_id):
+#         """Deletes a particular publisher from the db"""
+#         Author.objects.get(pk=author_id).delete()
+#         return JsonResponse({}, status=204)
 
 
 class BookList(View):
