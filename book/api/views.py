@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.views import View
 from django.http import JsonResponse
 from rest_framework import viewsets, filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 from .models import Book, Publisher, Author
@@ -34,11 +35,12 @@ class BookListView(viewsets.ModelViewSet):
     """"This uses the DRF framework serializer
     and viewset model to handle all the 
     endpoints we manually specified
-    for the Author class"""
+    for the Book class"""
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    # filter_backends = [filters.OrderingFilter]
-    # ordering_fields = ['title','published_date', 'Author']
+    filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
+    ordering_fields = ['title','published_date', 'Author']
+    filterset_fields = ['Author', 'Publisher', 'published_date']
 
 # class PublisherList(View):
 #     def get(self, request):
