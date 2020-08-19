@@ -5,10 +5,31 @@ from datetime import datetime
 from django.shortcuts import render
 from django.views import View
 from django.http import JsonResponse
+from rest_framework import viewsets
 
 
 from .models import Book, Publisher, Author
+from .serializers import AuthorSerializer, BookSerializer, PublisherSerializer
 # Create your views here.
+
+
+class PublishListView(viewsets.ModelViewSet):
+    """This uses the DRF framework serializer
+    and viewset model to handle all the 
+    endpoints we manually specified
+    for the publisher class"""
+    queryset = Publisher.objects.all()
+    serializer_class = PublisherSerializer
+
+class AuthorListView(viewsets.ModelViewSet):
+    """This uses the DRF framework serializer
+    and viewset model to handle all the 
+    endpoints we manually specified
+    for the Author class"""
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+
+
 
 class PublisherList(View):
     def get(self, request):
@@ -33,10 +54,6 @@ class PublisherList(View):
             
             }, status=201)
     
-    
-
-
-
 
 
 class PublisherOne(View):
