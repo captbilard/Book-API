@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_queryfields import QueryFieldsMixin
 
 from .models import Publisher, Book, Author
 
@@ -12,7 +13,8 @@ class AuthorSerializer(serializers.ModelSerializer):
         model = Author
         fields = ('__all__')
 
-class BookSerializer(serializers.ModelSerializer):
+class BookSerializer(QueryFieldsMixin, serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ('__all__')
+        depth = 1
