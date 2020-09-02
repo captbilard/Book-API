@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front End</title>
+</head>
+<body>
+    <h2>AJAX Test for sessions</h2>
+    <div id="results">
+
+    </div>
+
+    <script>
+        let resultDiv = document.getElementById('results')
+        fetch('/api/books/').then(response => {
+            return response.json()
+        }).then(data => {
+            console.log(data)
+            for(i of data.results){
+                resultDiv.append(i.title + ' ')
+            }
+        })
+    </script>
+</body>
+</html>
